@@ -14,11 +14,23 @@ class CalcViewController: UIViewController {
     @IBOutlet weak var tenPctButton: UIButton!
     @IBOutlet weak var twentyPctButton: UIButton!
     @IBOutlet weak var splitNumberLabel: UILabel!
+    @IBOutlet weak var calcButton: UIButton!
+    @IBOutlet weak var stepper: UIStepper!
+    
+    @IBAction func inputFieldChanged(_ sender: UITextField) {
+        if (sender.text != "") {
+            calcButton.alpha = 1.0;
+            calcButton.isEnabled = true;
+        } else {
+            calcButton.alpha = 0.3;
+            calcButton.isEnabled = false;
+        }
+    }
     
     var buttonArray: Array<UIButton> = [];
     var tipAmount: Float = 0.1;
-    var splitNum: Float = 2.0;
-    var billAmount: Float?;
+    var splitNum: Int = 2;
+    var billAmount: Float = 0;
     var resultingAmount: String = "$0.00";
     
     override func viewDidLoad() {
@@ -26,7 +38,10 @@ class CalcViewController: UIViewController {
         buttonArray.append(contentsOf: [zeroPctButton, tenPctButton, twentyPctButton]);
         tenPctButton.backgroundColor = UIColor.yellow;
         tenPctButton.layer.cornerRadius = 10;
-
+        calcButton.alpha = 0.3;
+        calcButton.isEnabled = false;
+        calcButton.layer.cornerRadius = 8;
+        stepper.value = 2;
     }
     
     @IBAction func tipChanged(_ sender: UIButton) {
@@ -44,7 +59,7 @@ class CalcViewController: UIViewController {
 
     @IBAction func stepperValChange(_ sender: UIStepper) {
         splitNumberLabel.text = String(Int(sender.value));
-        splitNum = Float(sender.value);
+        splitNum = Int(sender.value);
         totalAmount.endEditing(true);
     }
     
@@ -57,20 +72,18 @@ class CalcViewController: UIViewController {
             destinationVC.numDiners = Int(splitNum);
             destinationVC.tipRate = Int(tipAmount * 100);
         }
-    }
-    
+    }    
     
     @IBAction func calcPressed(_ sender: UIButton) {
         if let amount = totalAmount.text {
-            billAmount = Float(amount);
-            resultingAmount = "$" + String(format: "%.2f", (billAmount! * (1.0 + (tipAmount))/splitNum));
-            print(resultingAmount);
-            performSegue(withIdentifier: "goToResult", sender: self);
-        } else {
-            fatalError("Enter amounts!");
-        }
+            if let billAmount = Float(amount) {
+                resultingAmount = "$" + String(format: "%.2f", (billAmount * (1.0 + (tipAmount))/Float(splitNum)));
+                print(resultingAmount);
+                performSegue(withIdentifier: "goToResult", sender: self);
+            } else {
+                fatalError("Enter amounts!");
+            }
+        };
     }
-    
-
 }
 

@@ -11,6 +11,7 @@ class ResultsViewController: UIViewController {
 
     @IBOutlet weak var totalPerCap: UILabel!
     @IBOutlet weak var instructLabel: UILabel!
+    @IBOutlet weak var backButton: UIButton!
     
     var shareAmount: String = "$0.00";
     var numDiners: Int = 2;
@@ -18,6 +19,7 @@ class ResultsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        backButton.layer.cornerRadius = 8;
 
         totalPerCap.text = String(shareAmount);
         
